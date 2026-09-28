@@ -1,57 +1,56 @@
-async function verifyCertificate() {
-  const input = document.getElementById("certificateId");
-  const result = document.getElementById("result");
+async function check() {
+    const input = document.getElementById("id");
+    const result = document.getElementById("result");
 
-  const id = input.value.trim().toUpperCase();
+    const value = input.value.trim().toUpperCase();
 
-  if (id === "") {
-    result.innerHTML = "Please enter an ID.";
-    return;
-  }
-
-  try {
-    const response = await fetch("certificates.json");
-
-    if (!response.ok) {
-      throw new Error("Could not load certificates.json");
+    if (value === "") {
+        result.innerHTML = "";
+        return;
     }
 
-    const certificates = await response.json();
+    try {
+        const response = await fetch("certificates.json");
 
-    if (certificates[id]) {
-      const certificate = certificates[id];
+        if (!response.ok) {
+            throw new Error("Data unavailable");
+        }
 
-      result.innerHTML = `
-        <div id="certificateFullscreen">
+        const data = await response.json();
 
-          <button id="closeCertificate" onclick="closeCertificate()">
-            ×
-          </button>
+        if (data[value]) {
 
-          <img 
-  src="/images/IMG-20260922-WA0001.jpg" 
-  alt="Certificate" 
-  id="fullCertificateImage" 
->
+            result.innerHTML = `
+                <div id="display">
 
-        </div>
-      `;
+                    <button id="close" onclick="closeDisplay()">
+                        ×
+                    </button>
 
-    } else {
-      result.innerHTML = "No certificate found for this ID.";
+                    <img
+                        src="/images/IMG-20260922-WA0001.jpg"
+                        alt=""
+                        id="image"
+                    >
+
+                </div>
+            `;
+
+        } else {
+            result.innerHTML = "";
+        }
+
+    } catch (error) {
+        console.error(error);
+        result.innerHTML = "";
     }
-
-  } catch (error) {
-    console.error(error);
-    result.innerHTML = "Error loading certificate data.";
-  }
 }
 
 
-function closeCertificate() {
-  const certificate = document.getElementById("certificateFullscreen");
+function closeDisplay() {
+    const display = document.getElementById("display");
 
-  if (certificate) {
-    certificate.remove();
-  }
+    if (display) {
+        display.remove();
+    }
 }
